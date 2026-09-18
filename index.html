@@ -2156,10 +2156,30 @@ function loadDemo(){
 }
 
 /* ═══ 시작 ═══ */
-try{ history.replaceState({nav:0},""); }catch(e){}
-if(Q.has("demo")) loadDemo(); else initAuth();
-setMode("practice");
-applyScreen("home");
+/* ── 시작 ── */
+try { 
+  history.replaceState({nav:0},""); 
+} catch(e){}
+
+// 1. 로그인/인증 초기화 단계 (오프라인일 때 에러가 나더라도 무조건 catch로 넘깁니다)
+try {
+  if(Q.has("demo")) {
+    loadDemo(); 
+  } else {
+    initAuth(); 
+  }
+} catch(authError) {
+  console.warn("인증 서버 통신 실패 (오프라인 모드 진행):", authError);
+}
+
+// 2. 초기 모드 및 화면 설정 단계 (인증 에러와 상관없이 '무조건' 실행되어야 구절 기능이 켜집니다)
+try {
+  setMode("practice");
+  applyScreen("home");
+} catch(renderError) {
+  console.error("화면 구성 중 치명적 에러 발생:", renderError);
+}
+
 
      if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
