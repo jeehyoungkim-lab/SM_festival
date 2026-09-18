@@ -670,6 +670,20 @@ footer{color:var(--ink-soft);font-size:11px;margin-top:18px;letter-spacing:.03em
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.115.0/dist/umd/supabase.js"></script>
 
 <script>
+// 💡 [추가] 오프라인 상태에서 Supabase 라이브러리를 로드하지 못했을 때 에러 방지
+if (typeof supabase === 'undefined') {
+  console.warn("Supabase를 불러오지 못했습니다. 오프라인 모드로 동작합니다.");
+  window.supabase = {
+    from: () => ({
+      select: () => ({ eq: () => Promise.resolve({ data: [], error: null }) }),
+      upsert: () => Promise.resolve({ error: null })
+    })
+  };
+}
+
+
+
+
 /* ══════════════════════════════════════════════════════════════
    [설정] Supabase 연결
    Supabase 대시보드 → Settings → API Keys 에서 두 가지를 복사해
