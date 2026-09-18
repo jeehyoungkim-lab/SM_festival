@@ -24,24 +24,15 @@
    본문 글자는 #5F8A7B 가 배경 대비 3.7:1 이라 작은 글씨에서 읽기
    어려워, 같은 색상 계열을 어둡게 내린 톤을 본문용으로 씁니다. */
 :root{
-  --bg:#F1FCF8;
-  --surface:#FFFFFF;
-  --tint:#DFF6ED;
-  --core:#90E4C1;
-  --secondary:#B2E58E;
-  --deep:#5F8A7B;
-  --accent:#E9C5AB;
-  --ink:#23453A;
-  --ink-soft:#46705F;
-  --accent-ink:#9A5B2B;
-  --line:#CFE8DC;
-  --line-soft:#E2F1EA;
-  --brand:#3C7C67;
-  --shadow:0 1px 2px rgba(35,69,58,.05), 0 6px 18px rgba(35,69,58,.05);
-  --g-seed:#A79079; --g-sprout:#6FAF3E; --g-leaf:#2F8F66;
-  --g-flower:#C9718F; --g-fruit:#C25F31; --g-none:#DCEDE5;
-  --hi:#FFFFFF;
-  color-scheme:light;
+ --bg:#0F1F1A; --surface:#182D26; --tint:#1E362E;
+    --core:#90E4C1; --secondary:#B2E58E; --deep:#8FB6A6; --accent:#E9C5AB;
+    --ink:#E4F3EC; --ink-soft:#A9CBBB; --accent-ink:#E9C5AB;
+    --line:#2C4B40; --line-soft:#233B33; --brand:#90E4C1;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.22);
+    --g-seed:#C9B096; --g-sprout:#B6E58E; --g-leaf:#79D5AA;
+    --g-flower:#F0A6BE; --g-fruit:#F0925F; --g-none:#2C4B40;
+    --hi:#12241E;
+    color-scheme:dark;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -670,20 +661,6 @@ footer{color:var(--ink-soft);font-size:11px;margin-top:18px;letter-spacing:.03em
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.115.0/dist/umd/supabase.js"></script>
 
 <script>
-// 💡 [추가] 오프라인 상태에서 Supabase 라이브러리를 로드하지 못했을 때 에러 방지
-if (typeof supabase === 'undefined') {
-  console.warn("Supabase를 불러오지 못했습니다. 오프라인 모드로 동작합니다.");
-  window.supabase = {
-    from: () => ({
-      select: () => ({ eq: () => Promise.resolve({ data: [], error: null }) }),
-      upsert: () => Promise.resolve({ error: null })
-    })
-  };
-}
-
-
-
-
 /* ══════════════════════════════════════════════════════════════
    [설정] Supabase 연결
    Supabase 대시보드 → Settings → API Keys 에서 두 가지를 복사해
@@ -1492,14 +1469,8 @@ function run(){
   var badge={practice:"연습용",contest:"대회용",personal:state.review?"다시 보기":"개인용"}[state.mode];
   $("rbadge").textContent=badge;
   $("rbadge").className="tag "+(state.mode==="contest"?"":state.mode==="personal"?"personal":"practice");
-
-   // 1. [새로 추가] 서버 데이터가 없으면 임시 데이터를 쓰는 안전장치 상자를 만듭니다.
-   var personData = state.person || { name: "연습 사용자", parts: ["전체 구절"] };
-   
-   // 2. [수정] state.person 단어를 방금 만든 personData로 바꿉니다.
-   $("rname").textContent = personData.name || "암송 구절";
-   $("rmeta").innerHTML = esc((personData.parts || ["전체 구절"]).join(" · "))+"<br>암송 구절 "+state.picked.length+"개";
-
+  $("rname").textContent = state.person.name || "암송 구절";
+  $("rmeta").innerHTML = esc(state.person.parts.join(" · "))+"<br>암송 구절 "+state.picked.length+"개";
 
   $("ralert").innerHTML="";
   if(!state.review){
@@ -2162,40 +2133,13 @@ function loadDemo(){
 }
 
 /* ═══ 시작 ═══ */
-/* ── 시작 ── */
-try { 
-  history.replaceState({nav:0},""); 
-} catch(e){}
-
-// 1. 로그인/인증 초기화 단계 (오프라인일 때 에러가 나더라도 무조건 catch로 넘깁니다)
-try {
-  if(Q.has("demo")) {
-    loadDemo(); 
-  } else {
-    initAuth(); 
-  }
-} catch(authError) {
-  console.warn("인증 서버 통신 실패 (오프라인 모드 진행):", authError);
-}
-
-// 2. 초기 모드 및 화면 설정 단계 (인증 에러와 상관없이 '무조건' 실행되어야 구절 기능이 켜집니다)
-try {
-  setMode("practice");
-  applyScreen("home");
-} catch(renderError) {
-  console.error("화면 구성 중 치명적 에러 발생:", renderError);
-}
-
-
-     if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log("오프라인 암송 서비스 준비 완료!"))
-        .catch((err) => console.error("서비스 워커 등록 실패:", err));
-    });
-  }
+try{ history.replaceState({nav:0},""); }catch(e){}
+if(Q.has("demo")) loadDemo(); else initAuth();
+setMode("practice");
+applyScreen("home");
 })();
-   
 </script>
+
+
 
 </body></html>
