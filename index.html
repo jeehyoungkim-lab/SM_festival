@@ -2160,9 +2160,16 @@ try{ history.replaceState({nav:0},""); }catch(e){}
 if(Q.has("demo")) loadDemo(); else initAuth();
 setMode("practice");
 applyScreen("home");
+
+     if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log("오프라인 암송 서비스 준비 완료!"))
+        .catch((err) => console.error("서비스 워커 등록 실패:", err));
+    });
+  }
 })();
+   
 </script>
-
-
 
 </body></html>
