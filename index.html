@@ -1492,8 +1492,14 @@ function run(){
   var badge={practice:"연습용",contest:"대회용",personal:state.review?"다시 보기":"개인용"}[state.mode];
   $("rbadge").textContent=badge;
   $("rbadge").className="tag "+(state.mode==="contest"?"":state.mode==="personal"?"personal":"practice");
-  $("rname").textContent = state.person.name || "암송 구절";
-  $("rmeta").innerHTML = esc(state.person.parts.join(" · "))+"<br>암송 구절 "+state.picked.length+"개";
+
+   // 1. [새로 추가] 서버 데이터가 없으면 임시 데이터를 쓰는 안전장치 상자를 만듭니다.
+   var personData = state.person || { name: "연습 사용자", parts: ["전체 구절"] };
+   
+   // 2. [수정] state.person 단어를 방금 만든 personData로 바꿉니다.
+   $("rname").textContent = personData.name || "암송 구절";
+   $("rmeta").innerHTML = esc((personData.parts || ["전체 구절"]).join(" · "))+"<br>암송 구절 "+state.picked.length+"개";
+
 
   $("ralert").innerHTML="";
   if(!state.review){
