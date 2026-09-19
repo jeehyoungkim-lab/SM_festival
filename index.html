@@ -35,16 +35,25 @@
     color-scheme:dark;
 }
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#0F1F1A; --surface:#182D26; --tint:#1E362E;
-    --core:#90E4C1; --secondary:#B2E58E; --deep:#8FB6A6; --accent:#E9C5AB;
-    --ink:#E4F3EC; --ink-soft:#A9CBBB; --accent-ink:#E9C5AB;
-    --line:#2C4B40; --line-soft:#233B33; --brand:#90E4C1;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.22);
-    --g-seed:#C9B096; --g-sprout:#B6E58E; --g-leaf:#79D5AA;
-    --g-flower:#F0A6BE; --g-fruit:#F0925F; --g-none:#2C4B40;
-    --hi:#12241E;
-    color-scheme:dark;
+  :root:not([data-theme="dark"]){
+  --bg:#F1FCF8;
+  --surface:#FFFFFF;
+  --tint:#DFF6ED;
+  --core:#90E4C1;
+  --secondary:#B2E58E;
+  --deep:#5F8A7B;
+  --accent:#E9C5AB;
+  --ink:#23453A;
+  --ink-soft:#46705F;
+  --accent-ink:#9A5B2B;
+  --line:#CFE8DC;
+  --line-soft:#E2F1EA;
+  --brand:#3C7C67;
+  --shadow:0 1px 2px rgba(35,69,58,.05), 0 6px 18px rgba(35,69,58,.05);
+  --g-seed:#A79079; --g-sprout:#6FAF3E; --g-leaf:#2F8F66;
+  --g-flower:#C9718F; --g-fruit:#C25F31; --g-none:#DCEDE5;
+  --hi:#FFFFFF;
+  color-scheme:light;
   }
 }
 :root[data-theme="dark"]{
@@ -2144,6 +2153,63 @@ if(Q.has("demo")) loadDemo(); else initAuth();
 setMode("practice");
 applyScreen("home");
 })();
+
+/* ══════════════════════════════════════════════════════════════
+   [추가] 새로고침해도 '모두 선택/해제' 및 개별 구절 설정 상태 기억하기
+   ══════════════════════════════════════════════════════════════ */
+
+// 1. 사용자가 무언가를 클릭할 때마다 현재 화면의 모든 설정 상태를 로컬에 저장합니다.
+document.addEventListener('click', function(e) {
+  // 클릭된 요소가 '모두 선택' 버튼이거나 개별 구절(chip) 버튼일 때만 작동합니다.
+  if (e.target.closest('.allbtn') || e.target.closest('.chip')) {
+    
+    // 화면에 있는 모든 개별 구절(chip)의 이름과 선택 상태(true/false)를 수집합니다.
+    const currentSettings = {};
+    document.querySelectorAll('.chip').forEach(chip => {
+      const name = chip.getAttribute('data-name');
+      const isPressed = chip.getAttribute('aria-pressed') === 'true';
+      currentSettings[name] = isPressed;
+    });
+    
+    // 수집한 설정을 폰/PC 보관함(LocalStorage)에 저장합니다.
+    localStorage.setItem('recitation_toggle_settings', JSON.stringify(currentSettings));
+  }
+});
+
+// 2. 페이지가 새로 켜질 때, 과거에 저장해 둔 설정 상태를 그대로 복원합니다.
+function restoreToggleSettings() {
+  const saved = localStorage.getItem('recitation_toggle_settings');
+  if (!saved) return; // 과거 기록이 없으면 기본 상태(모두 해제)로 유지합니다.
+  
+  const settings = JSON.parse(saved);
+  
+  // 저장된 기억을 바탕으로 구절 버튼들의 선택 상태를 복구합니다.
+  Object.keys(settings).forEach(name => {
+    const chip = document.querySelector(`.chip[data-name="${name}"]`);
+    if (chip) {
+      chip.setAttribute('aria-pressed', settings[name] ? 'true' : 'false');
+    }
+  });
+
+  // [중요] 구절 버튼 상태에 맞춰 '모두 선택' 버튼의 글자(모두 선택 ↔ 모두 해제)도 매칭해 줍니다.
+  document.querySelectorAll('.group').forEach(group => {
+    const totalChips = group.querySelectorAll('.chip').length;
+    const pressedChips = group.querySelectorAll('.chip[aria-pressed="true"]').length;
+    const allBtn = group.querySelector('.allbtn');
+    
+    if (allBtn) {
+      if (totalChips === pressedChips && totalChips > 0) {
+        allBtn.textContent = '모두 해제';
+      } else {
+        allBtn.textContent = '모두 선택';
+      }
+    }
+  });
+}
+
+// 3. 웹 페이지가 로드되고 화면이 그려진 직후(약 0.3초 뒤) 과거 설정을 자동으로 불러옵니다.
+setTimeout(restoreToggleSettings, 300);
+   
 </script>
 
 
