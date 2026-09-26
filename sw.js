@@ -1,17 +1,1 @@
-const CACHE_NAME = 'bible-festival-v1';
-const ASSETS = [
-  './',
-  'https://googleapis.com'
-];
-
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
-});
-
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((response) => response || fetch(e.request))
-  );
-});
+const CACHE\_NAME = 'scripture-memory-v1'; const ASSETS\_TO\_CACHE = ['./', './index.html']; self.addEventListener('install', (event) =&gt; { event.waitUntil(caches.open(CACHE\_NAME).then((cache) =&gt; cache.addAll(ASSETS\_TO\_CACHE))); self.skipWaiting(); }); self.addEventListener('activate', (event) =&gt; { event.waitUntil(caches.keys().then((keys) =&gt; { return Promise.all(keys.filter((key) =&gt; key !== CACHE\_NAME).map((key) =&gt; caches.delete(key))); })); self.clients.claim(); }); self.addEventListener('fetch', (event) =&gt; { event.respondWith(caches.match(event.request).then((cachedResponse) =&gt; { return cachedResponse || fetch(event.request); })); });
