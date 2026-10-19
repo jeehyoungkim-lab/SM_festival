@@ -1713,8 +1713,9 @@
                         alt="네비게이토"
                     />
                     <span>
-                        <h1>네비게이토<br />암송 <em>Festival</em></h1>
-                        <span class="lede" id="lede">구절을 뽑고, 씨앗부터 열매까지 자라갑니다</span>
+                        <h1><br />암송 <em>카드 뽑기</em></h1>
+                        <span class="lede" id="lede">
+                            </span>
                     </span>
                 </button>
             </header>
@@ -1748,21 +1749,7 @@
                                     opacity=".5"
                                 ></path></svg></span
                         ><span><b>연습용</b><span>이름 없이 가볍게. 뽑고 스스로 확인합니다.</span></span></button
-                    ><button type="button" class="modecard" data-mode="contest">
-                        <span class="modeicon"
-                            ><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                <path d="M7.4 2.9h9.2v5.5c0 2.7-2.1 4.9-4.6 4.9s-4.6-2.2-4.6-4.9V2.9z"></path>
-                                <path d="M11.1 13.9h1.8V18h-1.8z"></path>
-                                <path d="M6.9 18.3h10.2c.5 0 1 .4 1 1v1.8H5.9v-1.8c0-.6.4-1 1-1z"></path>
-                                <path
-                                    d="M5.9 4.3H3.2v2.3c0 2 1.4 3.6 3.3 4V8.7c-.8-.3-1.3-1.1-1.3-2.1V4.3zM18.1 4.3h2.7v2.3c0 2-1.4 3.6-3.3 4V8.7c.8-.3 1.3-1.1 1.3-2.1V4.3z"
-                                ></path>
-                                <path
-                                    d="m12 4.7.9 1.85 2.05.3-1.48 1.44.35 2.04L12 9.36l-1.82.97.35-2.04L9.05 6.85l2.05-.3z"
-                                    style="fill: var(--hi)"
-                                    opacity=".6"
-                                ></path></svg></span
-                        ><span><b>대회용</b><span>대회시 채점 결과가 순위표에 모입니다.</span></span></button
+
                     ><button type="button" class="modecard" data-mode="personal">
                         <span class="modeicon"
                             ><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -1776,7 +1763,7 @@
                                     stroke-linecap="round"
                                     opacity=".6"
                                 ></path></svg></span
-                        ><span><b>개인용</b><span>암송한 기록을 남기고 활용하여 암송합니다.</span></span>
+                        ><span><b>기록용</b><span>암송한 기록을 남기고 활용하여 암송합니다.</span></span>
                     </button>
                 </div>
                 <button type="button" class="textlink" id="toRankFromHome">대회 순위표 보기</button>
@@ -6999,7 +6986,7 @@
                     var docked = which === "result";
                     $("dock").hidden = !docked;
                     document.body.classList.toggle("docked", docked);
-                    $("lede").textContent = which === "home" ? "구절을 뽑고, 씨앗부터 열매까지 자라갑니다" : "";
+                    $("lede").textContent = which === "home" ? " " : "";
                     paintNav();
                     armPoll();
                     window.scrollTo(0, 0);
